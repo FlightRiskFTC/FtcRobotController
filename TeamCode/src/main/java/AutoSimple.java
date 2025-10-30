@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class AutoSimple {
     int counter;
     int counter_loop;
-    @Override
     public void runOpMode() {
         DcMotor front_left_motor = hardwareMap.get(DcMotor.class, "front_left_motor");
         DcMotor front_right_motor = hardwareMap.get(DcMotor.class, "front_right_motor");
