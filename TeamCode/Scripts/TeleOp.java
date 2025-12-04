@@ -21,13 +21,17 @@ public class vincent_opmode extends OpMode {
     DcMotor frontRight = null;
     DcMotor backLeft = null;
     DcMotor backRight = null;
+    DcMotor flywheel = null;
     double power = 1;
+    double flywheelVel = 0;
+    double targetFlywheelSpeed = .5
 
     public void init(){
         frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -41,14 +45,24 @@ public class vincent_opmode extends OpMode {
     @Override
 
     public void loop() {
-        telemetry.addLine("Running");
-        telemetry.update();
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rot = -gamepad1.right_stick_x;
+
+        flywheelVel = motor.getVelocity();
+
+        telemetry.addLine("Running");
+        telemetry.addLine("Flywheel Speed: " + Double.toString(vel))
+        telemetry.update();
+
         frontLeft.setPower((y + x + rot) * power);
         frontRight.setPower((y - x + rot) * power);
         backLeft.setPower((y - x - rot) * power);
         backRight.setPower((y + x - rot) * power);
+
+        if(gamepad1.right_bumper && flywheelVel){
+            double motorSpeedTowardsTarget;
+            flywheel.setPower()
+        }
     }
 }
