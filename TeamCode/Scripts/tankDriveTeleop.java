@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Test (Blocks to Java)")
+@TeleOp(name = "tankDriveTeleop")
 public class Test extends LinearOpMode {
 
   private DcMotor front_left_motor;
