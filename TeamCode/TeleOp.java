@@ -73,5 +73,8 @@ public class vincent_opmode extends OpMode {
             }            
             flywheel.setPower(motorSpeedTowardsTarget)
         }
+        else{
+            flywheel.setPower(0);
+        }
     }
 }
