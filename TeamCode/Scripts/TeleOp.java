@@ -60,9 +60,18 @@ public class vincent_opmode extends OpMode {
         backLeft.setPower((y - x - rot) * power);
         backRight.setPower((y + x - rot) * power);
 
-        if(gamepad1.right_bumper && flywheelVel){
+        if(gamepad1.right_bumper && flywheelVel < targetFlywheelSpeed){
+            
             double motorSpeedTowardsTarget;
-            flywheel.setPower()
+
+            if(flywheelSpeed > (targetFlywheelSpeed / 2)){
+                double slowRange = flywheelSpeed / 2;
+                motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
+            }
+            else{
+                motorSpeedTowardsTarget = 1;
+            }            
+            flywheel.setPower(motorSpeedTowardsTarget)
         }
     }
 }
