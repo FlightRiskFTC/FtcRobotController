@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
-@TeleOp(name = "TeleOp")
+@TeleOp(name = "OdometryTest")
 
 public class vincent_opmode extends OpMode {
 
@@ -31,6 +31,8 @@ public class vincent_opmode extends OpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        right_launch_servo = hardwareMap.get(CRServo.class, "rightServo");
+        left_launch_servo = hardwareMap.get(CRServo.class, "leftServo");
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -57,5 +59,7 @@ public class vincent_opmode extends OpMode {
         frontRight.setPower((y - x + rot) * power);
         backLeft.setPower((y - x - rot) * power);
         backRight.setPower((y + x - rot) * power);
+        
+
     }
 }

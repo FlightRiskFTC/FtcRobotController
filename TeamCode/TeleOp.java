@@ -22,9 +22,13 @@ public class vincent_opmode extends OpMode {
     DcMotor backLeft = null;
     DcMotor backRight = null;
     DcMotor flywheel = null;
+    CRServo right_launch_servo = null;
+    CRServo left_launch_servo = null;
+    int counter = 0
     double power = 1;
     double flywheelVel = 0;
     double targetFlywheelSpeed = .5
+
 
     public void init(){
         frontLeft  = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -32,6 +36,8 @@ public class vincent_opmode extends OpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        right_launch_servo = hardwareMap.get(CRServo.class, "rightServo");
+        left_launch_servo = hardwareMap.get(CRServo.class, "leftServo");
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -60,21 +66,59 @@ public class vincent_opmode extends OpMode {
         backLeft.setPower((y - x - rot) * power);
         backRight.setPower((y + x - rot) * power);
 
-        if(gamepad1.right_bumper && flywheelVel < targetFlywheelSpeed){
+        //TEST CODE
+        if(gamepad1.right_bumper && flywheelVel < targetFlywheelSpeed) {
+
+            double motorSpeedTowardsTarget;
+
+            if (flywheelVel > (targetFlywheelSpeed / 2)) {
+                double slowRange = flywheelSpeed / 2;
+                motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
+            } else {
+                motorSpeedTowardsTarget = 1;
+            }
+            flywheel.setPower(motorSpeedTowardsTarget);
+        }
+
+        //REAL CODE
+        if(gamepad1.right_bumper && false)
             
             double motorSpeedTowardsTarget;
 
-            if(flywheelSpeed > (targetFlywheelSpeed / 2)){
-                double slowRange = flywheelSpeed / 2;
-                motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
+            if(flywheelVel < targetFlywheelSpeed) {
+                if (flywheelSpeed > (targetFlywheelSpeed / 2)) {
+                    double slowRange = flywheelSpeed / 2;
+                    motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
+                } else {
+                    motorSpeedTowardsTarget = 1;
+                }
+                flywheel.setPower(motorSpeedTowardsTarget)
             }
-            else{
-                motorSpeedTowardsTarget = 1;
-            }            
-            flywheel.setPower(motorSpeedTowardsTarget)
-        }
-        else{
-            flywheel.setPower(0);
+            else {
+                flywheel.setPower(0)
+            }
+
+
+            counter += 1;
+
+            if (counter == 200) {
+                right_launch_servo.setPower(-1);
+                left_launch_servo.setPower(1);
+            }
+            if (counter == 255) {
+                right_launch_servo.setPower(0);
+                left_launch_servo.setPower(0);
+            }
+            if (counter == 325) {
+                right_launch_servo.setPower(-1);
+                left_launch_servo.setPower(1);
+                counter = 201;
+            }
+        } else {
+            counter = 0;
+            launcher_wheel.setPower(0);
+            right_launch_servo.setPower(0);
+            left_launch_servo.setPower(0);
         }
     }
 }
