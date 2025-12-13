@@ -12,22 +12,24 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp(name = "TeleOp")
+@TeleOp(name = "MecanumTeleop")
 
-public class vincent_opmode extends OpMode {
+public class MecanumTeleop extends OpMode {
 
     DcMotor frontLeft = null;
     DcMotor frontRight = null;
     DcMotor backLeft = null;
     DcMotor backRight = null;
-    DcMotor flywheel = null;
+    DcMotorEx flywheel = null;
     CRServo right_launch_servo = null;
     CRServo left_launch_servo = null;
-    int counter = 0
+    int counter = 0;
     double power = 1;
     double flywheelVel = 0;
-    double targetFlywheelSpeed = .5
+    double targetFlywheelVel = 1500;
 
 
     public void init(){
@@ -35,16 +37,17 @@ public class vincent_opmode extends OpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        flywheel.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         right_launch_servo = hardwareMap.get(CRServo.class, "rightServo");
         left_launch_servo = hardwareMap.get(CRServo.class, "leftServo");
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.FORWARD);
-    };
+    }
 
-    public void init_loop() {};
+    public void init_loop() {}
 
     public void start() {}
 
@@ -55,10 +58,10 @@ public class vincent_opmode extends OpMode {
         double x = gamepad1.left_stick_x;
         double rot = -gamepad1.right_stick_x;
 
-        flywheelVel = motor.getVelocity();
+        flywheelVel = flywheel.getVelocity();
 
         telemetry.addLine("Running");
-        telemetry.addLine("Flywheel Speed: " + Double.toString(vel))
+        telemetry.addLine("Flywheel Speed: " + Double.toString(flywheelVel));
         telemetry.update();
 
         frontLeft.setPower((y + x + rot) * power);
@@ -67,12 +70,12 @@ public class vincent_opmode extends OpMode {
         backRight.setPower((y + x - rot) * power);
 
         //TEST CODE
-        if(gamepad1.right_bumper && flywheelVel < targetFlywheelSpeed) {
+        if(gamepad1.right_bumper && flywheelVel < targetFlywheelVel) {
 
             double motorSpeedTowardsTarget;
 
-            if (flywheelVel > (targetFlywheelSpeed / 2)) {
-                double slowRange = flywheelSpeed / 2;
+            if (flywheelVel > (targetFlywheelVel / 2)) {
+                double slowRange = flywheelVel / 2;
                 motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
             } else {
                 motorSpeedTowardsTarget = 1;
@@ -81,21 +84,21 @@ public class vincent_opmode extends OpMode {
         }
 
         //REAL CODE
-        if(gamepad1.right_bumper && false)
+        if(gamepad1.right_bumper && false){
             
             double motorSpeedTowardsTarget;
 
-            if(flywheelVel < targetFlywheelSpeed) {
-                if (flywheelSpeed > (targetFlywheelSpeed / 2)) {
-                    double slowRange = flywheelSpeed / 2;
+            if(flywheelVel < targetFlywheelVel) {
+                if (flywheelVel > (targetFlywheelVel / 2)) {
+                    double slowRange = flywheelVel / 2;
                     motorSpeedTowardsTarget = 1 - (2 * (slowRange / 0.5));
                 } else {
                     motorSpeedTowardsTarget = 1;
                 }
-                flywheel.setPower(motorSpeedTowardsTarget)
+                flywheel.setPower(motorSpeedTowardsTarget);
             }
             else {
-                flywheel.setPower(0)
+                flywheel.setPower(0);
             }
 
 
@@ -116,7 +119,7 @@ public class vincent_opmode extends OpMode {
             }
         } else {
             counter = 0;
-            launcher_wheel.setPower(0);
+            flywheel.setPower(0);
             right_launch_servo.setPower(0);
             left_launch_servo.setPower(0);
         }
